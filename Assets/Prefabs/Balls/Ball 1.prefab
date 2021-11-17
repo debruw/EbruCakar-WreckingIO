@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 1918849116204461254}
   - component: {fileID: 1918849116204461241}
   - component: {fileID: 3577972464335477176}
+  - component: {fileID: -8243827122751571366}
   m_Layer: 0
   m_Name: Ball 1
   m_TagString: Ball
@@ -30,7 +31,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1918849116204461244}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.69, z: -3}
+  m_LocalPosition: {x: 0, y: 0.69, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -127,7 +128,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 0
-  m_ConnectedAnchor: {x: 0, y: 0.5, z: -3}
+  m_ConnectedAnchor: {x: 0, y: 0.5, z: -2.5}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 1
@@ -318,3 +319,18 @@ TrailRenderer:
   m_MinVertexDistance: 0.1
   m_Autodestruct: 0
   m_Emitting: 1
+--- !u!114 &-8243827122751571366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1918849116204461244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78a8eb14b56931b4288ece36419623fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AngryEmoji: {fileID: 180600, guid: f276f55eadaf0e34ba03d5b43bfbfae0, type: 3}
+  LaughEmoji: {fileID: 138276, guid: 92cf35f623d72fc448f4d0661c9284f5, type: 3}
+  myController: {fileID: 0}

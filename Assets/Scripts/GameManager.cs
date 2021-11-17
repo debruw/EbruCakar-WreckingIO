@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Cinemachine;
 
 public class GameManager : MonoBehaviour
 {
@@ -35,9 +36,12 @@ public class GameManager : MonoBehaviour
     public List<GameObject> PowerUpBoxes;
     float powerUpCount;
 
+    [SerializeField]
+    CinemachineVirtualCamera cmVirtualCam;
+
     private void Update()
     {
-        if (!GameManager.Instance.isGameStarted || GameManager.Instance.isGameOver)
+        if (!isGameStarted || isGameOver)
         {
             return;
         }
@@ -50,9 +54,29 @@ public class GameManager : MonoBehaviour
                 PowerUpBoxes[rand].SetActive(true);
                 PowerUpBoxes[rand].GetComponent<Rigidbody>().isKinematic = false;
                 PowerUpBoxes.RemoveAt(rand);
-                powerUpCount = Random.Range(4f, 6f);
+                powerUpCount = Random.Range(8f, 10f);
             }
         }
+        if (shakeTimer > 0)
+        {
+            shakeTimer -= Time.deltaTime;
+            if (shakeTimer <= 0f)
+            {
+                //Time Over
+                CinemachineBasicMultiChannelPerlin cinemachineBasicMultiChannelPerlin = cmVirtualCam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+
+                cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = 0;
+            }
+        }
+    }
+
+    float shakeTimer;
+    public void ShakeCamera(float intensity, float time)
+    {
+        CinemachineBasicMultiChannelPerlin cinemachineBasicMultiChannelPerlin = cmVirtualCam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+
+        cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = intensity;
+        shakeTimer = time;
     }
 
     public void CheckPlayerCountForWin()

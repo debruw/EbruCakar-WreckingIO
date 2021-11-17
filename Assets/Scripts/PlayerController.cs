@@ -22,8 +22,6 @@ public class PlayerController : MonoBehaviour
     public Canvas HeadCanvas;
     public Animator DriverAnimator;
 
-    public GameObject AngryEmoji, LaughEmoji;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -39,6 +37,7 @@ public class PlayerController : MonoBehaviour
 
         if (!GameManager.Instance.isGameStarted || GameManager.Instance.isGameOver)
         {
+            rb.velocity = Vector3.down;
             return;
         }
 
@@ -49,7 +48,7 @@ public class PlayerController : MonoBehaviour
 
         if (isTurnBallActive)
         {
-            BallParent.transform.RotateAround(transform.position, Vector3.up, 5 * Time.deltaTime);
+            BallParent.transform.RotateAround(transform.position, Vector3.up, 720 * Time.deltaTime);
         }
         HeadCanvas.transform.LookAt(Camera.main.transform, Vector3.up);
     }
@@ -65,31 +64,8 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag("Ball"))
+        if (collision.collider.CompareTag("PowerupBox"))
         {
-            if (collision.gameObject.GetComponent<Rigidbody>().velocity.magnitude > 3)
-            {
-                Transform colisionObjectParent = collision.transform.parent.parent;
-                rb.AddForce(((transform.position - collision.transform.position) + new Vector3(0, Random.Range(0f, 2.5f), 0)) * collision.gameObject.GetComponent<Rigidbody>().velocity.magnitude, ForceMode.Impulse);
-                Instantiate(AngryEmoji, HeadCanvas.transform.position, Quaternion.identity);
-                if (colisionObjectParent.GetComponentInChildren<PlayerController>())
-                {
-                    PlayerController pc = colisionObjectParent.GetComponentInChildren<PlayerController>();
-                    pc.DriverAnimator.SetTrigger("Cheer");
-                    Instantiate(LaughEmoji, pc.HeadCanvas.transform.position, Quaternion.identity);
-                }
-                else if (colisionObjectParent.GetComponentInChildren<AIController>())
-                {
-                    AIController ai = colisionObjectParent.GetComponentInChildren<AIController>();
-                    ai.DriverAnimator.SetTrigger("Cheer");
-                    Instantiate(LaughEmoji, ai.HeadCanvas.transform.position, Quaternion.identity);
-
-                }
-            }
-        }
-        else if (collision.collider.CompareTag("PowerupBox"))
-        {
-            Instantiate(LaughEmoji, HeadCanvas.transform.position, Quaternion.identity);
             switch (collision.gameObject.GetComponent<PowerUpBox>().myType)
             {
                 case PowerUpBox.PowerUpType.TurnBall:

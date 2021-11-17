@@ -337,8 +337,6 @@ MonoBehaviour:
   BallParent: {fileID: 4760190053750198362}
   HeadCanvas: {fileID: 0}
   DriverAnimator: {fileID: 3314186924812707024}
-  AngryEmoji: {fileID: 180600, guid: f276f55eadaf0e34ba03d5b43bfbfae0, type: 3}
-  LaughEmoji: {fileID: 138276, guid: 92cf35f623d72fc448f4d0661c9284f5, type: 3}
 --- !u!54 &936540711324407246
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3078,6 +3076,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4760190053750198362}
     m_Modifications:
+    - target: {fileID: -8243827122751571366, guid: d39ea04a958673e499e85b8d57192a99, type: 3}
+      propertyPath: myController
+      value: 
+      objectReference: {fileID: 936540711324407091}
     - target: {fileID: 1918849116204461241, guid: d39ea04a958673e499e85b8d57192a99, type: 3}
       propertyPath: m_ConnectedBody
       value: 
