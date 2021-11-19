@@ -7,23 +7,15 @@ public class GroundController : MonoBehaviour
 {
     [SerializeField]
     GameObject[] GroundCircles;
+    public MeshRenderer[] Cylinders;
     float counter, counterMax = 20f;
     int currentCircle;
-    [SerializeField]
-    GameObject WarningCanvas;
-    [SerializeField]
-    float[] canvasSizes;
-    [SerializeField]
-    float[] maincolliderSizes;
-    public GameObject MainColliderObject;
-    Image warningFillImage;
     bool isBlinking;
 
     // Start is called before the first frame update
     void Start()
     {
         counter = counterMax;
-        warningFillImage = WarningCanvas.GetComponentInChildren<Image>();
     }
 
     // Update is called once per frame
@@ -34,14 +26,15 @@ public class GroundController : MonoBehaviour
             return;
         }
         counter -= Time.deltaTime;
-        warningFillImage.fillAmount = (counterMax - counter) / counterMax;
+        Cylinders[currentCircle].material.SetFloat("_Arc2", 360 - ((counterMax - counter) / counterMax * 360));
         if (counter <= 0)
         {
             StartCoroutine(WaitAndLoseChunks());
             counter = counterMax;
+            Cylinders[currentCircle].gameObject.SetActive(false);
             currentCircle++;
-            WarningCanvas.transform.localScale = new Vector3(canvasSizes[currentCircle], canvasSizes[currentCircle], 1);
-            warningFillImage.fillAmount = 0;
+            Cylinders[currentCircle].gameObject.SetActive(true);
+            Cylinders[currentCircle].material.SetFloat("_Arc2", 0);
         }
         if (counter < 3 && !isBlinking)
         {
@@ -55,7 +48,12 @@ public class GroundController : MonoBehaviour
         while (counter > 0 && counter < 3)
         {
             yield return new WaitForSeconds(.5f);
-            warningFillImage.enabled = !warningFillImage.enabled;
+            Cylinders[currentCircle].enabled = !Cylinders[currentCircle].enabled;
+            if (GameManager.Instance.isGameOver)
+            {
+                Cylinders[currentCircle].enabled = false;
+                break;
+            }
         }
         isBlinking = false;
     }
@@ -63,10 +61,14 @@ public class GroundController : MonoBehaviour
     IEnumerator WaitAndLoseChunks()
     {
         Transform currentCircleTr = GroundCircles[currentCircle].transform;
-        currentCircleTr.gameObject.SetActive(true);
+        GroundCircles[currentCircle].GetComponent<MeshRenderer>().enabled = false;
         int forCount = GroundCircles[currentCircle].transform.childCount;
-        int nextColliderSize = currentCircle;
-        MainColliderObject.transform.localScale = new Vector3(maincolliderSizes[nextColliderSize], maincolliderSizes[nextColliderSize], 1);
+
+        for (int i = 0; i < forCount; i++)
+        {
+            currentCircleTr.GetChild(i).gameObject.SetActive(true);
+        }
+
         for (int i = 0; i < forCount; i++)
         {
             yield return new WaitForSeconds(Random.Range(.1f, .2f));

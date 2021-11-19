@@ -94,6 +94,7 @@ public class GameManager : MonoBehaviour
             isGameOver = true;
             Confetti1.SetActive(true);
             Confetti2.SetActive(true);
+            players[0].GetComponentInChildren<PlayerController>().DriverAnimator.SetTrigger("Cheer");
 
             yield return new WaitForSeconds(1f);
             WinPanel.SetActive(true);

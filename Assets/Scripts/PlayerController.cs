@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
@@ -21,6 +22,7 @@ public class PlayerController : MonoBehaviour
     Transform BallParent;
     public Canvas HeadCanvas;
     public Animator DriverAnimator;
+    public GameObject TireRight, TireLeft;
 
     // Start is called before the first frame update
     void Start()
@@ -34,6 +36,7 @@ public class PlayerController : MonoBehaviour
     {
         line.SetPosition(0, PlayerTailPos.position);
         line.SetPosition(1, BallTransform.position);
+        HeadCanvas.transform.LookAt(Camera.main.transform, Vector3.up);
 
         if (!GameManager.Instance.isGameStarted || GameManager.Instance.isGameOver)
         {
@@ -44,13 +47,23 @@ public class PlayerController : MonoBehaviour
         if (joystick.Horizontal != 0)
         {
             transform.Rotate(transform.up, joystick.Horizontal * TurnSpeed * Time.deltaTime);
+
+            TireLeft.transform.localEulerAngles += new Vector3(0, joystick.Horizontal * TurnSpeed * Time.deltaTime, 0);
+            TireRight.transform.localEulerAngles += new Vector3(0, joystick.Horizontal * TurnSpeed * Time.deltaTime, 0);
+
+            TireLeft.transform.localEulerAngles = new Vector3(TireLeft.transform.localEulerAngles.x, Mathf.Clamp(TireLeft.transform.localEulerAngles.y, 50, 130), TireLeft.transform.localEulerAngles.z);
+            TireRight.transform.localEulerAngles = new Vector3(TireRight.transform.localEulerAngles.x, Mathf.Clamp(TireRight.transform.localEulerAngles.y, 50, 130), TireRight.transform.localEulerAngles.z);
+        }
+        else
+        {
+            TireRight.transform.DOLocalRotate(new Vector3(TireRight.transform.localEulerAngles.x, 90, TireRight.transform.localEulerAngles.z), .2f);
+            TireLeft.transform.DOLocalRotate(new Vector3(TireLeft.transform.localEulerAngles.x, 90, TireLeft.transform.localEulerAngles.z), .2f);
         }
 
         if (isTurnBallActive)
         {
             BallParent.transform.RotateAround(transform.position, Vector3.up, 720 * Time.deltaTime);
         }
-        HeadCanvas.transform.LookAt(Camera.main.transform, Vector3.up);
     }
 
     private void FixedUpdate()

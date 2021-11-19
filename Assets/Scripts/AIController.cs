@@ -17,21 +17,27 @@ public class AIController : MonoBehaviour
     [SerializeField]
     Transform BallParent;
 
-    bool isNearEdge;
+    //public bool isNearEdge;
     public Transform CarFront;
-
-    RaycastHit hit;
 
     public Canvas HeadCanvas;
     public Animator DriverAnimator;
 
     public GameObject AngryEmoji, LaughEmoji;
+    public GameObject TireRight, TireLeft;
+    public float turnSide;
+
+    public Transform front, right, left;
+    RaycastHit hit;
+    int layerMask;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         HeadCanvas.transform.LookAt(Camera.main.transform, Vector3.up);
+        // Bit shift the index of the layer (8) to get a bit mask
+        layerMask = 1 << 7;
     }
 
     // Update is called once per frame
@@ -39,26 +45,27 @@ public class AIController : MonoBehaviour
     {
         line.SetPosition(0, PlayerTailPos.position);
         line.SetPosition(1, BallTransform.position);
+        HeadCanvas.transform.LookAt(Camera.main.transform, Vector3.up);
 
         if (!GameManager.Instance.isGameStarted || GameManager.Instance.isGameOver)
         {
             return;
         }
-
-        if (Physics.Raycast(CarFront.position, -transform.up * 5, out hit))
+        if (!Physics.Raycast(front.position, -transform.up * 2, out hit, 3, layerMask))
         {
-            if (hit.collider.CompareTag("Ground") && isNearEdge)
-            {
-                isNearEdge = false;
-            }
-            else if (!isNearEdge)
-            {
-                isNearEdge = true;
-                transform.DORotate(new Vector3(transform.eulerAngles.x, transform.eulerAngles.y + Random.Range(-2, 3) * 90, transform.eulerAngles.z), 3f);
-            }
+            Debug.Log("front");
+            transform.Rotate(Vector3.up, 1 * 270 * Time.deltaTime);
         }
-
-        HeadCanvas.transform.LookAt(Camera.main.transform, Vector3.up);
+        else if (!Physics.Raycast(right.position, -transform.up * 2, out hit, 3, layerMask))
+        {
+            Debug.Log("right");
+            transform.Rotate(Vector3.up, -1 * 270 * Time.deltaTime);
+        }
+        else if (!Physics.Raycast(left.position, -transform.up * 2, out hit, 3, layerMask))
+        {
+            Debug.Log("left");
+            transform.Rotate(Vector3.up, 1 * 270 * Time.deltaTime);
+        }
     }
 
     private void FixedUpdate()
@@ -75,6 +82,7 @@ public class AIController : MonoBehaviour
     {
         if (other.CompareTag("Water"))
         {
+            Debug.Log("AI fall");
             forwardSpeed = 0;
             GetComponent<Rigidbody>().velocity = Vector3.zero;
             BallParent.GetComponentInChildren<Rigidbody>().velocity = Vector3.zero;
