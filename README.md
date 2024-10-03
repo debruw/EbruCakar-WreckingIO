@@ -3,6 +3,7 @@ Made with Unity 2020.3.19f
 
 # Used Technologies
 * DoTween
+* Cinemachine
 * Singleton pattern
 * Post processing
   
